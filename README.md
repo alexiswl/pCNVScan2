@@ -1,6 +1,6 @@
 # pCNVScan2
 A tool for computing Copy Number Variation in polyploid genomes.
-New version in python 3.
+New version in python 3. Current version : 2.0.1 (sept 2017)
 
 # Instalation
 

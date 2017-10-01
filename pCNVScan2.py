@@ -28,7 +28,7 @@ import subprocess
 import os
 import sys
 import builtins
-import numpy
+#import numpy
 from Bio import SeqIO
 import pprint
 from BCBio import GFF
