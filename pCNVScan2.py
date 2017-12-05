@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 =========================================================================================================================
  CNVScan: Algorithm for searching Copy Number Variations in a sample file (*.pileup) among a list of genes in a ref file (*.gbk or *.gff).
@@ -6,9 +7,9 @@
  Malar J. 2016 Apr 12;15:206. doi: 10.1186/s12936-016-1258-x.
  PMID: 27066902
  
- Required: 	- Python 3.5.3
-			- BioPython [1]
-			
+ Required:  - Python 3.5.3
+            - BioPython [1]
+            
  REQUIRED OPTIONS:
  Pattern size. Size of the patterns for algorithms. Recommended number: 6. Too High number will decrease program's speed and increase memory. Too low number reduce the sensitivity.
  Pileup sample file. Path to the input Pileup file.
@@ -19,7 +20,6 @@
  Contact: johann.beghain@inserm.fr
 =========================================================================================================================
 """
-#!/usr/bin/env python
 import argparse
 import ast
 import logging
@@ -100,21 +100,18 @@ def extract_all_from_gff(gff_file_name, fasta_file_name):
         if rec.id not in chromosomes:
             logger.error(rec.id+" not in fasta. Please check the names of chromosomes: they must be the same in fasta and gff.")
             continue
-        genes = dict()
-        for gene in rec.features:
-            #print(gene.id)
-            for mRNA in gene.sub_features:
-                if mRNA.type != "mRNA":
-                    continue
-                for exon in mRNA.sub_features:
-                    #print(exon.type)
-                    if exon.type == "exon":
-                        #if rec.id not in genes:
-                        #    genes[rec.id] = {}
-                        if gene.id in genes:
-                            genes[gene.id] = genes[gene.id]+'@'+str(exon.location.nofuzzy_start)+'_'+str(exon.location.nofuzzy_end)
-                        else:
-                            genes[gene.id] = str(exon.location.nofuzzy_start)+'_'+str(exon.location.nofuzzy_end)
+        genes = dict() 
+        # For each gene in the chromosome, grab the start and end points.
+        for gene in rec.features: 
+            if gene.type != "gene":
+                continue
+            # If the gene has a duplicate in the gff file, we will append it with an '@' symbol
+            if gene.id in genes:
+                genes[gene.id] = genes[gene.id] + '@' + str(gene.location.start) + '_' + str(gene.location.end)
+            # Otherwise just add the key as the gene.id
+            else:
+                genes[gene.id] = str(gene.location.start)+"_"+str(gene.location.end)
+        # Add the gene list to this chromosome
         chromosomes[rec.id].set_genes(genes)
     gff_handle.close()
     return(chromosomes)
