@@ -172,6 +172,7 @@ def compute_ratios(chromosomes):
 
 def cnv_scan(chromosomes, theorical_ratios, output_name):
     output = open(output_name, 'w')
+    output.write("Chromosome\tGene\tRatio\n")
     for chromosome in chromosomes:
         sequence = list(chromosomes[chromosome].seq)
         coverage = chromosomes[chromosome].coverage
@@ -201,7 +202,7 @@ def cnv_scan(chromosomes, theorical_ratios, output_name):
             #Compute the mean ratio
             final_ratio=ratio/gene_size
             #print(final_ratio)
-            output.write(gene+"\t"+str(round(final_ratio, 2))+"\n")
+            output.write(chromosome.name+"\t"+gene+"\t"+str(round(final_ratio, 2))+"\n")
 
 ###############################################################################
 #############                MAIN                                 #############
