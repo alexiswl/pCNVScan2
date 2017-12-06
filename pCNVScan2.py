@@ -64,8 +64,8 @@ def ArgumentsParser():
                       help = 'Path to a valid .pileup file. The alignment must have been done on the same reference as the reference file.')
   parser.add_argument('-o', '--output', type = str, required = True,
                       help = 'Path to the output file. Output a list of copy numbers by genes.')
-  parser.add_argument('-i', '--genbank', type = str, required = False,
-                      help = 'Path to a valid input .gbk reference file. No fasta file required.')
+  parser.add_argument('-i', '--genbank', type = str,
+                               help = 'Path to a valid input .gbk reference file. No fasta file required.')
   parser.add_argument('-g', '--gff', type = str, required = False,
                       help = 'Path to a valid .gff reference file. If set you have to give also a fasta file in -f option.')
   parser.add_argument('-f', '--fasta', type = str, required = False,
@@ -202,7 +202,7 @@ def cnv_scan(chromosomes, theorical_ratios, output_name):
             #Compute the mean ratio
             final_ratio=ratio/gene_size
             #print(final_ratio)
-            output.write(chromosome.name+"\t"+gene+"\t"+str(round(final_ratio, 2))+"\n")
+            output.write(chromosomes[chromosome].name+"\t"+gene+"\t"+str(round(final_ratio, 2))+"\n")
 
 ###############################################################################
 #############                MAIN                                 #############
@@ -233,6 +233,10 @@ if __name__ == "__main__":
     if args.kmer:
         kmer_size = args.kmer
     chromosomes = dict()
+    # Ensure that either gbk is set or gff and fasta are set
+    # bool != bool is the equivalent of xor.
+    if not bool(args.genbank) != bool(args.gff and args.fasta):
+        sys.exit("Error: Genbank needs to be specified or both gff and fasta need to be specified")
     #Check input format for reference
     if args.genbank:
         logger.info("Input GBK file: "+args.genbank)
